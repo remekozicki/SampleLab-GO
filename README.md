@@ -123,9 +123,3 @@ To install and run the application, ensure you have the following:
 - **AI-Based Analysis**: Implement machine learning for automated anomaly detection in test results.
 - **System Integration**: Enable API integrations with other laboratory systems.
 
-## License
-This project is licensed under the **MIT License**. See the `LICENSE` file for more details.
-
-## Contact
-For more information or collaboration inquiries, contact the development team at: [email@example.com]
-
