@@ -31,7 +31,7 @@ public class User implements Serializable {
 
     private String email;
 
-    @Convert(converter = PasswordConverter.class)
+//    @Convert(converter = PasswordConverter.class)
     private String password;
 
     private Role role;

@@ -8,6 +8,7 @@ import agh.edu.pl.slpbackend.service.MethodService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ public class Config {
             final ExaminationRepository examinationRepository,
             final UserRepository userRepository,
             final AssortmentRepository assortmentRepository,
+            final PasswordEncoder passwordEncoder,
             final MethodService methodService) {
         return args -> {
             if (groupRepository.count() == 0) {
@@ -483,25 +485,27 @@ public class Config {
                 examinationRepository.saveAll(List.of(examination1, examination2, examination3, examination4, examination5, examination6, examination7));
             }
 
+            System.out.println("ADMIN HASH: " + passwordEncoder.encode("admin"));
+
             if (userRepository.count() == 0) {
                 User admin = User.builder()
                         .name("Maciej Nowak")
                         .email("admin@gmail.com")
-                        .password("admin")
+                        .password(passwordEncoder.encode("admin"))
                         .role(Role.ADMIN)
                         .build();
 
                 User worker = User.builder()
                         .name("Jan Kowalski")
                         .email("worker@gmail.com")
-                        .password("worker")
+                        .password(passwordEncoder.encode("worker"))
                         .role(Role.WORKER)
                         .build();
 
                 User intern = User.builder()
                         .name("Piotr Stoch")
                         .email("intern@gmail.com")
-                        .password("intern")
+                        .password(passwordEncoder.encode("intern"))
                         .role(Role.INTERN)
                         .build();
 
