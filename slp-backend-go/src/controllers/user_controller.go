@@ -3,7 +3,7 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"samplelab-go/src/models"
+	"samplelab-go/src/dto"
 	"samplelab-go/src/services"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func GetAllUsers(c *gin.Context) {
 }
 
 func Register(c *gin.Context) {
-	var input models.User
+	var input dto.User
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -45,7 +45,7 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	var input models.LoginInput
+	var input dto.LoginInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -63,4 +63,26 @@ func Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
+func ChangePassword(c *gin.Context) {
+	var req dto.ChangePasswordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Niepoprawne dane"})
+		return
+	}
+
+	email := c.MustGet("email").(string)
+	if email == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Brak emaila w nagłówku"})
+		return
+	}
+
+	err := services.ChangePassword(email, req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Hasło zostało zmienione"})
 }

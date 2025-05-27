@@ -5,6 +5,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"samplelab-go/src/db"
+	"samplelab-go/src/dto"
 	"samplelab-go/src/models"
 )
 
@@ -33,7 +34,7 @@ func FindUserByEmail(email string) (models.DBUser, error) {
 
 var ErrEmailTaken = errors.New("adres email jest już zajęty")
 
-func RegisterUser(input models.User) (*models.DBUser, error) {
+func RegisterUser(input dto.User) (*models.DBUser, error) {
 	conn := db.GetDB()
 
 	// sprawdź, czy email już istnieje
@@ -60,4 +61,30 @@ func RegisterUser(input models.User) (*models.DBUser, error) {
 	}
 
 	return &user, nil
+}
+
+var ErrWrongPassword = errors.New("stare hasło jest nieprawidłowe")
+
+func ChangePassword(email string, req dto.ChangePasswordRequest) error {
+	conn := db.GetDB()
+
+	var user models.DBUser
+	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
+		return errors.New("użytkownik nie istnieje")
+	}
+
+	// Sprawdź stare hasło
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
+		return ErrWrongPassword
+	}
+
+	// Haszuj nowe hasło
+	hashed, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	// Zapisz nowe hasło
+	user.Password = string(hashed)
+	return conn.Save(&user).Error
 }

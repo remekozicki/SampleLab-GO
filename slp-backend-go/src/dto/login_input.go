@@ -1,4 +1,4 @@
-package models
+package dto
 
 type LoginInput struct {
 	Email    string `json:"email" binding:"required,email"`

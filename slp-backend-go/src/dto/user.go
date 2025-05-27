@@ -1,4 +1,4 @@
-package models
+package dto
 
 import "samplelab-go/src/enum"
 
