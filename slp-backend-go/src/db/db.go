@@ -9,7 +9,8 @@ import (
 var database *gorm.DB
 
 func InitDB() {
-	dsn := "postgres://postgres:postgres@localhost:5432/sample-lab-db"
+	dsn := "postgres://postgres:postgres@localhost:5433/sample-lab-db?sslmode=disable"
+
 	var err error
 	database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

@@ -2,9 +2,9 @@ package services
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"samplelab-go/src/auth"
 	"samplelab-go/src/db"
+	"samplelab-go/src/dto"
 	"samplelab-go/src/models"
 
 	"golang.org/x/crypto/bcrypt"
@@ -12,28 +12,31 @@ import (
 
 var ErrInvalidCredentials = errors.New("nieprawidłowy e-mail lub hasło")
 
-func AuthenticateUser(email, password string) (string, error) {
-	conn := db.GetDB() // <- musi być *gorm.DB
-
+func AuthenticateUser(email, password string) (*dto.LoginResponse, error) {
+	conn := db.GetDB()
 	var user models.DBUser
-	err := conn.Where("email = ?", email).First(&user).Error
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return "", ErrInvalidCredentials
-		}
-		return "", err
+
+	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, ErrInvalidCredentials
 	}
 
-	// Sprawdzenie hasła
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return "", ErrInvalidCredentials
+		return nil, ErrInvalidCredentials
 	}
 
-	// JWT
 	token, err := auth.GenerateJWT(user)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	resp := &dto.LoginResponse{
+		User: dto.User{
+			Name:  user.Name,
+			Email: user.Email,
+			Role:  user.Role,
+		},
+		Token: token,
+	}
+
+	return resp, nil
 }

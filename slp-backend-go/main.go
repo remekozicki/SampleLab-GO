@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"samplelab-go/src/auth"
 	"samplelab-go/src/controllers"
 	"samplelab-go/src/db"
 )
@@ -21,11 +22,18 @@ func main() {
 
 	db.InitDB()
 
-	// Routing
-	r.GET("/users", controllers.GetAllUsers)
-	r.POST("/users/login", controllers.Login)
-	r.POST("/users/register", controllers.Register)
+	users := r.Group("/users")
+	users.Use(auth.JWTMiddleware())
+	{
+		users.GET("/", controllers.GetAllUsers)
+		users.POST("/register", controllers.Register)
+		users.POST("/change-password", controllers.ChangePassword)
+		// dodaj pozostałe: deleteUser, changePasswordByAdmin itp.
+	}
 
+	// Routing
+
+	r.POST("/users/login", controllers.Login)
 	err := r.Run(":8080")
 	if err != nil {
 		return
