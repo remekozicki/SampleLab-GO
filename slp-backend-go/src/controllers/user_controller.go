@@ -87,3 +87,33 @@ func ChangePassword(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Hasło zostało zmienione"})
 }
+
+func ChangePasswordByAdmin(c *gin.Context) {
+	var req dto.ChangePasswordRequest
+	email := c.Param("email")
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Niepoprawne dane"})
+		return
+	}
+
+	err := services.ChangePasswordByAdmin(email, req.NewPassword)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Hasło zostało zmienione przez administratora"})
+}
+
+func DeleteUserByEmail(c *gin.Context) {
+	email := c.Param("email")
+
+	err := services.DeleteUserByEmail(email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Użytkownik został usunięty"})
+}

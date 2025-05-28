@@ -23,8 +23,23 @@ func JWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("email", claims.Subject)
+		email, _ := claims["email"].(string)
+		role, _ := claims["role"].(string)
 
+		c.Set("email", email)
+		c.Set("role", role)
+
+		c.Next()
+	}
+}
+
+func RequireAdminRole() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		role := c.GetString("role")
+		if role != "ADMIN" {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Brak uprawnień – tylko ADMIN"})
+			return
+		}
 		c.Next()
 	}
 }

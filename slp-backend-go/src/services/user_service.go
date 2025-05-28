@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"samplelab-go/src/db"
 	"samplelab-go/src/dto"
 	"samplelab-go/src/models"
@@ -17,21 +16,6 @@ func GetAllUsers() ([]models.DBUser, error) {
 	var users []models.DBUser
 	result := conn.Find(&users)
 	return users, result.Error
-}
-
-func FindUserByEmail(email string) (models.DBUser, error) {
-	conn := db.GetDB() // <- to musi być *gorm.DB
-
-	var user models.DBUser
-	err := conn.Where("email = ?", email).First(&user).Error
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return models.DBUser{}, errors.New("użytkownik nie istnieje")
-		}
-		return models.DBUser{}, err
-	}
-
-	return user, nil
 }
 
 var ErrEmailTaken = errors.New("adres email jest już zajęty")
@@ -101,4 +85,32 @@ func ChangePassword(email string, req dto.ChangePasswordRequest) error {
 	// Zapisz nowe hasło
 	user.Password = string(hashed)
 	return conn.Save(&user).Error
+}
+
+func ChangePasswordByAdmin(email, newPassword string) error {
+	conn := db.GetDB()
+	var user models.DBUser
+
+	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
+		return errors.New("użytkownik nie istnieje")
+	}
+
+	hashed, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	user.Password = string(hashed)
+	return conn.Save(&user).Error
+}
+
+func DeleteUserByEmail(email string) error {
+	conn := db.GetDB()
+	var user models.DBUser
+
+	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
+		return errors.New("użytkownik nie istnieje")
+	}
+
+	return conn.Delete(&user).Error
 }
