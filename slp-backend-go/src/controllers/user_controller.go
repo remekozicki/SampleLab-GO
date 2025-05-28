@@ -20,7 +20,7 @@ func GetAllUsers(c *gin.Context) {
 }
 
 func Register(c *gin.Context) {
-	var input dto.User
+	var input dto.RegisterInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -37,10 +37,11 @@ func Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"id":    user.ID,
-		"email": user.Email,
-		"name":  user.Name,
-		"role":  user.Role,
+		"id":       user.ID,
+		"email":    user.Email,
+		"name":     user.Name,
+		"role":     user.Role,
+		"password": user.Password,
 	})
 }
 
@@ -52,7 +53,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token, err := services.AuthenticateUser(input.Email, input.Password)
+	resp, err := services.AuthenticateUser(input.Email, input.Password)
 	if err != nil {
 		if errors.Is(err, services.ErrInvalidCredentials) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Nieprawidłowy e-mail lub hasło"})
@@ -62,7 +63,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, resp)
 }
 
 func ChangePassword(c *gin.Context) {

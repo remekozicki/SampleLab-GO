@@ -1,6 +1,8 @@
 package services
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -34,7 +36,7 @@ func FindUserByEmail(email string) (models.DBUser, error) {
 
 var ErrEmailTaken = errors.New("adres email jest już zajęty")
 
-func RegisterUser(input dto.User) (*models.DBUser, error) {
+func RegisterUser(input dto.RegisterInput) (*models.DBUser, error) {
 	conn := db.GetDB()
 
 	// sprawdź, czy email już istnieje
@@ -43,8 +45,10 @@ func RegisterUser(input dto.User) (*models.DBUser, error) {
 		return nil, ErrEmailTaken
 	}
 
+	password := generateRandomPassword(12)
+
 	// haszuj hasło
-	hashed, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +63,18 @@ func RegisterUser(input dto.User) (*models.DBUser, error) {
 	if err := conn.Create(&user).Error; err != nil {
 		return nil, err
 	}
-
+	user.Password = password
 	return &user, nil
+}
+
+func generateRandomPassword(length int) string {
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		// fallback gdyby coś poszło nie tak
+		return "DefaultPass123"
+	}
+	return base64.StdEncoding.EncodeToString(bytes)[:length]
 }
 
 var ErrWrongPassword = errors.New("stare hasło jest nieprawidłowe")
