@@ -23,18 +23,26 @@ func main() {
 	db.InitDB()
 
 	users := r.Group("/users")
+	users.POST("/login", controllers.Login)
 	users.Use(auth.JWTMiddleware())
 	{
-		users.GET("/", controllers.GetAllUsers)
+		users.GET("/", auth.RequireAdminRole(), controllers.GetAllUsers)
 		users.POST("/register", controllers.Register)
 		users.POST("/change-password", controllers.ChangePassword)
-		// dodaj pozostałe: deleteUser, changePasswordByAdmin itp.
+		users.POST("/change-password/:email", auth.RequireAdminRole(), controllers.ChangePasswordByAdmin)
+		users.DELETE("/:email", auth.RequireAdminRole(), controllers.DeleteUserByEmail)
+
+	}
+
+	address := r.Group("/address")
+	address.Use(auth.JWTMiddleware())
+	{
+		address.GET("/list", controllers.GetAddressList)
 	}
 
 	// Routing
 
-	r.POST("/users/login", controllers.Login)
-	err := r.Run(":8080")
+	err := r.Run(":8090")
 	if err != nil {
 		return
 	} // Nasłuchuj na porcie 8080
