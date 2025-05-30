@@ -5,9 +5,9 @@ import (
 	"samplelab-go/src/dto"
 )
 
-func GetAllAddresses() ([]dto.Address, error) {
+func GetAllAddresses() ([]dto.AddressDto, error) {
 	conn := db.GetDB()
-	var address []dto.Address
+	var address []dto.AddressDto
 	result := conn.Find(&address)
 	return address, result.Error
 }
