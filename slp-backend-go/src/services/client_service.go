@@ -30,16 +30,18 @@ func SaveClient(dto dto.ClientDto) error {
 
 	address := client.Address
 
-	// 2. Najpierw zapisz address (bez ID == fail)
+	//2. Najpierw zapisz address (bez ID == fail)
 	if err := dbConn.Create(&address).Error; err != nil {
 		return err
 	}
-
-	// 3. Przypisz wygenerowane ID adresu
-	client.AddressID = client.Address.ID
+	client.AddressID = address.ID
+	client.Address = models.Address{}
 
 	// 4. Zapisz klienta
-	return dbConn.Create(&client).Error
+	if err := dbConn.Create(&client).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func DeleteClient(id uint) error {
