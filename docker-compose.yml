@@ -15,6 +15,24 @@ services:
       - front-tier
       - back-tier
 
+  backend-go:
+    build: ./slp-backend-go
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - "8090:8090"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: sample-lab-db
+      ENCRYPTOR_PASSWORD: password
+    networks:
+      - front-tier
+      - back-tier
+
 
   frontend:
     build: ./slp-frontend
