@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"samplelab-go/src/auth"
 	"samplelab-go/src/controllers"
 	"samplelab-go/src/db"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
