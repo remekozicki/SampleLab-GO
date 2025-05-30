@@ -33,13 +33,27 @@ func JWTMiddleware() gin.HandlerFunc {
 	}
 }
 
-func RequireAdminRole() gin.HandlerFunc {
+func RequireMinRole(minRole string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		role := c.GetString("role")
-		if role != "ADMIN" {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Brak uprawnień – tylko ADMIN"})
+		if !HasMinRole(c, minRole) {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Brak uprawnień"})
 			return
 		}
 		c.Next()
 	}
+}
+
+var rolePriority = map[string]int{
+	"INTERN": 0,
+	"WORKER": 1,
+	"ADMIN":  2,
+}
+
+func HasMinRole(c *gin.Context, required string) bool {
+	roleVal, exists := c.Get("role")
+	if !exists {
+		return false
+	}
+	userRole := strings.ToUpper(roleVal.(string))
+	return rolePriority[userRole] >= rolePriority[required]
 }
