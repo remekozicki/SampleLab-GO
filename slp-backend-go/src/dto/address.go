@@ -6,3 +6,7 @@ type AddressDto struct {
 	ZipCode string `json:"zipCode"`
 	City    string `json:"city"`
 }
+
+func (AddressDto) TableName() string {
+	return "address"
+}

@@ -21,6 +21,7 @@ func GetAllClients() ([]dto.ClientDto, error) {
 
 	return result, nil
 }
+
 func SaveClient(dto dto.ClientDto) error {
 	dbConn := db.GetDB()
 
@@ -40,6 +41,7 @@ func SaveClient(dto dto.ClientDto) error {
 	// 4. Zapisz klienta
 	return dbConn.Create(&client).Error
 }
+
 func DeleteClient(id uint) error {
 	conn := db.GetDB()
 	if err := conn.Delete(&models.Client{}, id).Error; err != nil {

@@ -3,10 +3,10 @@ package models
 import "samplelab-go/src/dto"
 
 type Client struct {
-	ID          int64 `gorm:"primaryKey"`
+	ID          int64 `gorm:"primaryKey;autoIncrement"`
 	WijharsCode string
 	Name        string
-	AddressID   int64   // Klucz obcy do Address
+	AddressID   int64
 	Address     Address `gorm:"foreignKey:AddressID"`
 }
 
