@@ -2,7 +2,7 @@ package models
 
 import "samplelab-go/src/enum"
 
-type DBUser struct {
+type User struct {
 	ID       int64     `gorm:"primaryKey"`
 	Name     string    `json:"name"`
 	Email    string    `json:"email" gorm:"uniqueIndex"`
@@ -10,6 +10,6 @@ type DBUser struct {
 	Role     enum.Role `json:"role"`
 }
 
-func (DBUser) TableName() string {
+func (User) TableName() string {
 	return "users"
 }

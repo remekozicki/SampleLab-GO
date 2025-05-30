@@ -9,7 +9,7 @@ import (
 
 var jwtKey = []byte("twoj_sekretny_klucz")
 
-func GenerateJWT(user models.DBUser) (string, error) {
+func GenerateJWT(user models.User) (string, error) {
 	claims := jwt.MapClaims{
 		"email": user.Email,
 		"role":  user.Role.String(), // zakładam, że masz Role jako enum z metodą String()

@@ -10,21 +10,21 @@ import (
 	"samplelab-go/src/models"
 )
 
-func GetAllUsers() ([]models.DBUser, error) {
+func GetAllUsers() ([]models.User, error) {
 	conn := db.GetDB() // tu conn to *gorm.DB
 
-	var users []models.DBUser
+	var users []models.User
 	result := conn.Find(&users)
 	return users, result.Error
 }
 
 var ErrEmailTaken = errors.New("adres email jest już zajęty")
 
-func RegisterUser(input dto.RegisterInput) (*models.DBUser, error) {
+func RegisterUser(input dto.RegisterInput) (*models.User, error) {
 	conn := db.GetDB()
 
 	// sprawdź, czy email już istnieje
-	var existing models.DBUser
+	var existing models.User
 	if err := conn.Where("email = ?", input.Email).First(&existing).Error; err == nil {
 		return nil, ErrEmailTaken
 	}
@@ -38,7 +38,7 @@ func RegisterUser(input dto.RegisterInput) (*models.DBUser, error) {
 	}
 
 	// zapisz użytkownika
-	user := models.DBUser{
+	user := models.User{
 		Name:     input.Name,
 		Email:    input.Email,
 		Password: string(hashed),
@@ -66,7 +66,7 @@ var ErrWrongPassword = errors.New("stare hasło jest nieprawidłowe")
 func ChangePassword(email string, req dto.ChangePasswordRequest) error {
 	conn := db.GetDB()
 
-	var user models.DBUser
+	var user models.User
 	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
 		return errors.New("użytkownik nie istnieje")
 	}
@@ -89,7 +89,7 @@ func ChangePassword(email string, req dto.ChangePasswordRequest) error {
 
 func ChangePasswordByAdmin(email, newPassword string) error {
 	conn := db.GetDB()
-	var user models.DBUser
+	var user models.User
 
 	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
 		return errors.New("użytkownik nie istnieje")
@@ -106,7 +106,7 @@ func ChangePasswordByAdmin(email, newPassword string) error {
 
 func DeleteUserByEmail(email string) error {
 	conn := db.GetDB()
-	var user models.DBUser
+	var user models.User
 
 	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
 		return errors.New("użytkownik nie istnieje")

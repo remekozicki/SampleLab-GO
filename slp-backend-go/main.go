@@ -26,11 +26,11 @@ func main() {
 	users.POST("/login", controllers.Login)
 	users.Use(auth.JWTMiddleware())
 	{
-		users.GET("/", auth.RequireAdminRole(), controllers.GetAllUsers)
+		users.GET("/", auth.RequireMinRole("ADMIN"), controllers.GetAllUsers)
 		users.POST("/register", controllers.Register)
 		users.POST("/change-password", controllers.ChangePassword)
-		users.POST("/change-password/:email", auth.RequireAdminRole(), controllers.ChangePasswordByAdmin)
-		users.DELETE("/:email", auth.RequireAdminRole(), controllers.DeleteUserByEmail)
+		users.POST("/change-password/:email", auth.RequireMinRole("ADMIN"), controllers.ChangePasswordByAdmin)
+		users.DELETE("/:email", auth.RequireMinRole("ADMIN"), controllers.DeleteUserByEmail)
 
 	}
 
@@ -38,6 +38,15 @@ func main() {
 	address.Use(auth.JWTMiddleware())
 	{
 		address.GET("/list", controllers.GetAddressList)
+	}
+
+	clients := r.Group("/client")
+	clients.Use(auth.JWTMiddleware())
+	{
+		clients.GET("/list", controllers.GetClientList)
+		clients.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddClient)
+		clients.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditClient)
+		clients.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteClient)
 	}
 
 	// Routing

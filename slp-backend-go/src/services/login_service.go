@@ -14,7 +14,7 @@ var ErrInvalidCredentials = errors.New("nieprawidłowy e-mail lub hasło")
 
 func AuthenticateUser(email, password string) (*dto.LoginResponse, error) {
 	conn := db.GetDB()
-	var user models.DBUser
+	var user models.User
 
 	if err := conn.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, ErrInvalidCredentials
