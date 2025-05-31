@@ -95,6 +95,15 @@ func main() {
 		code.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteCode)
 	}
 
+	inspection := r.Group("/inspection")
+	inspection.Use(auth.JWTMiddleware())
+	{
+		inspection.GET("/list", controllers.GetInspectionList)
+		inspection.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddInspection)
+		inspection.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditInspection)
+		inspection.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteInspection)
+	}
+
 	err := r.Run(":8090")
 	if err != nil {
 		return
