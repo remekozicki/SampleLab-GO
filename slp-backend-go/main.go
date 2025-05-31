@@ -86,6 +86,15 @@ func main() {
 		sampling.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteSamplingStandard)
 	}
 
+	code := r.Group("/code")
+	code.Use(auth.JWTMiddleware())
+	{
+		code.GET("/list", controllers.GetAllCodes)
+		code.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddCode)
+		code.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditCode)
+		code.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteCode)
+	}
+
 	err := r.Run(":8090")
 	if err != nil {
 		return
