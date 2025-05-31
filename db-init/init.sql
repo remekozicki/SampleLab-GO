@@ -18,9 +18,30 @@ CREATE SEQUENCE IF NOT EXISTS assortment_id_seq;
 ALTER TABLE assortment ALTER COLUMN id SET DEFAULT nextval('assortment_id_seq');
 SELECT setval('assortment_id_seq', COALESCE((SELECT MAX(id) FROM assortment), 1));
 
+-- Product Group table
+CREATE SEQUENCE product_group_id_seq;
+ALTER TABLE product_group ALTER COLUMN id SET DEFAULT nextval('product_group_id_seq');
+SELECT setval('product_group_id_seq', COALESCE((SELECT MAX(id) FROM product_group), 1));
+
+-- auto delete assortment_indications
 ALTER TABLE assortment_indications
 DROP CONSTRAINT fk7aiabke38hkwv0ai7bmvfqtcu;
 
 ALTER TABLE assortment_indications
     ADD CONSTRAINT fk7aiabke38hkwv0ai7bmvfqtcu FOREIGN KEY (assortment_id)
         REFERENCES assortment(id) ON DELETE CASCADE;
+
+-- auto delete assortment
+ALTER TABLE assortment
+DROP CONSTRAINT fkltruhwpio7er8587wpi9tjyd2;
+
+ALTER TABLE assortment
+    ADD CONSTRAINT fkltruhwpio7er8587wpi9tjyd2 FOREIGN KEY (group_id)
+        REFERENCES product_group(id) ON DELETE CASCADE;
+
+-- auto delete product_group_sampling_standards
+ALTER TABLE product_group_sampling_standards DROP CONSTRAINT fk_product_group;
+
+ALTER TABLE product_group_sampling_standards
+    ADD CONSTRAINT fk_product_group FOREIGN KEY (groups_id)
+        REFERENCES product_group(id) ON DELETE CASCADE;

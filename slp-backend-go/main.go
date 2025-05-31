@@ -57,6 +57,16 @@ func main() {
 		assortment.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditAssortment)
 		assortment.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteAssortment)
 	}
+
+	productGroup := r.Group("/product-group")
+	productGroup.Use(auth.JWTMiddleware())
+	{
+		productGroup.GET("/list", controllers.GetProductGroupList)
+		productGroup.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddProductGroup)
+		productGroup.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditProductGroup)
+		productGroup.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteProductGroup)
+	}
+
 	err := r.Run(":8090")
 	if err != nil {
 		return
