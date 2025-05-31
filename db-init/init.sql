@@ -35,6 +35,13 @@ CREATE SEQUENCE sampling_standard_id_seq;
 ALTER TABLE sampling_standard ALTER COLUMN id SET DEFAULT nextval('sampling_standard_id_seq');
 SELECT setval('sampling_standard_id_seq', COALESCE((SELECT MAX(id) FROM sampling_standard), 1));
 
+-- Examination table
+CREATE SEQUENCE IF NOT EXISTS examination_id_seq;
+ALTER TABLE examination ALTER COLUMN id SET DEFAULT nextval('examination_id_seq');
+SELECT setval('examination_id_seq', (SELECT COALESCE(MAX(id), 0) FROM examination));
+
+
+
 -- auto delete assortment_indications
 ALTER TABLE assortment_indications
 DROP CONSTRAINT fk7aiabke38hkwv0ai7bmvfqtcu;
