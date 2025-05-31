@@ -77,6 +77,15 @@ func main() {
 		productGroup.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteProductGroup)
 	}
 
+	sampling := r.Group("/sampling-standard")
+	sampling.Use(auth.JWTMiddleware())
+	{
+		sampling.GET("/list", controllers.GetSamplingStandardList)
+		sampling.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddSamplingStandard)
+		sampling.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditSamplingStandard)
+		sampling.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteSamplingStandard)
+	}
+
 	code := r.Group("/code")
 	code.Use(auth.JWTMiddleware())
 	{
