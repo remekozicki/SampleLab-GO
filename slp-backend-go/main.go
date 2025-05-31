@@ -59,11 +59,26 @@ func main() {
 		indication.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditIndication)
 		indication.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteClient)
 	}
+	assortment := r.Group("/assortment")
+	assortment.Use(auth.JWTMiddleware())
+	{
+		assortment.GET("/list", controllers.GetAssortmentList)
+		assortment.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddAssortment)
+		assortment.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditAssortment)
+		assortment.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteAssortment)
+	}
 
-	// Routing
+	productGroup := r.Group("/product-group")
+	productGroup.Use(auth.JWTMiddleware())
+	{
+		productGroup.GET("/list", controllers.GetProductGroupList)
+		productGroup.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddProductGroup)
+		productGroup.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditProductGroup)
+		productGroup.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteProductGroup)
+	}
 
 	err := r.Run(":8090")
 	if err != nil {
 		return
-	} // Nasłuchuj na porcie 8080
+	}
 }
