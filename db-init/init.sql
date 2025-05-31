@@ -23,6 +23,11 @@ CREATE SEQUENCE product_group_id_seq;
 ALTER TABLE product_group ALTER COLUMN id SET DEFAULT nextval('product_group_id_seq');
 SELECT setval('product_group_id_seq', COALESCE((SELECT MAX(id) FROM product_group), 1));
 
+-- Sampling Standard table
+CREATE SEQUENCE sampling_standard_id_seq;
+ALTER TABLE sampling_standard ALTER COLUMN id SET DEFAULT nextval('sampling_standard_id_seq');
+SELECT setval('sampling_standard_id_seq', COALESCE((SELECT MAX(id) FROM sampling_standard), 1));
+
 -- auto delete assortment_indications
 ALTER TABLE assortment_indications
 DROP CONSTRAINT fk7aiabke38hkwv0ai7bmvfqtcu;
