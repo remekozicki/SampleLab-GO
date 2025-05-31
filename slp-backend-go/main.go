@@ -47,7 +47,17 @@ func main() {
 		clients.GET("/list", controllers.GetClientList)
 		clients.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddClient)
 		clients.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditClient)
-		clients.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteClient)
+		clients.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteIndication)
+	}
+
+	indication := r.Group("/indication")
+	indication.Use(auth.JWTMiddleware())
+	{
+		indication.GET("/list", controllers.GetAllIndications)
+		indication.GET("/:id", controllers.GetIndicationByID)
+		indication.POST("/save", auth.RequireMinRole("WORKER"), controllers.SaveIndication)
+		indication.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditIndication)
+		indication.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteClient)
 	}
 
 	// Routing
