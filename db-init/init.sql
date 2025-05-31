@@ -35,6 +35,11 @@ CREATE SEQUENCE sampling_standard_id_seq;
 ALTER TABLE sampling_standard ALTER COLUMN id SET DEFAULT nextval('sampling_standard_id_seq');
 SELECT setval('sampling_standard_id_seq', COALESCE((SELECT MAX(id) FROM sampling_standard), 1));
 
+-- Inspection table
+CREATE SEQUENCE inspection_id_seq;
+ALTER TABLE inspection ALTER COLUMN id SET DEFAULT nextval('inspection_id_seq');
+SELECT setval('inspection_id_seq', COALESCE((SELECT MAX(id) FROM inspection), 1));
+
 -- auto delete assortment_indications
 ALTER TABLE assortment_indications
 DROP CONSTRAINT fk7aiabke38hkwv0ai7bmvfqtcu;
@@ -57,3 +62,14 @@ ALTER TABLE product_group_sampling_standards DROP CONSTRAINT fk_product_group;
 ALTER TABLE product_group_sampling_standards
     ADD CONSTRAINT fk_product_group FOREIGN KEY (groups_id)
         REFERENCES product_group(id) ON DELETE CASCADE;
+
+-- auto delete inspection
+ALTER TABLE sample DROP CONSTRAINT fkkm4vbw1gk6kqnq96ivpvuo8jd;
+
+ALTER TABLE sample
+    ADD CONSTRAINT fkkm4vbw1gk6kqnq96ivpvuo8jd FOREIGN KEY (inspection_id)
+        REFERENCES inspection(id) ON DELETE CASCADE;
+
+
+ALTER TABLE examination DROP CONSTRAINT fkahwbkbsnwy0k5vnqob1t8lxmw;
+ALTER TABLE examination ADD CONSTRAINT fkahwbkbsnwy0k5vnqob1t8lxmw FOREIGN KEY (sample_id) REFERENCES sample(id) ON DELETE CASCADE;
