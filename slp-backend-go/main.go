@@ -49,7 +49,6 @@ func main() {
 		clients.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditClient)
 		clients.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteClient)
 	}
-
 	assortment := r.Group("/assortment")
 	assortment.Use(auth.JWTMiddleware())
 	{
