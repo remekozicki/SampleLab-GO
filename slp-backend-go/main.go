@@ -117,6 +117,17 @@ func main() {
 		reportData.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteReportData)
 	}
 
+	examination := r.Group("/examination")
+	examination.Use(auth.JWTMiddleware())
+
+	{
+		//examination.GET("/sample/:sampleId", controllers.GetExaminationsBySampleID)
+		examination.GET("/:id", controllers.GetExaminationByID)
+		//examination.POST("", auth.RequireMinRole("WORKER"), controllers.SaveExamination)
+		//examination.PUT("", auth.RequireMinRole("WORKER"), controllers.UpdateExamination)
+		examination.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteExamination)
+	}
+
 	if err := r.Run(":8090"); err != nil {
 		return
 	}
