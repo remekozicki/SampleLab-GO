@@ -3,9 +3,9 @@ package models
 import "samplelab-go/src/dto"
 
 type Examination struct {
-	ID               uint `gorm:"primaryKey"`
-	IndicationID     uint
-	SampleID         uint
+	ID               int64 `gorm:"primaryKey"`
+	IndicationID     int64
+	SampleID         int64
 	Signage          string
 	NutritionalValue string
 	Specification    string

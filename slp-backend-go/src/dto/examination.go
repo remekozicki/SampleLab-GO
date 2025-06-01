@@ -1,9 +1,9 @@
 package dto
 
 type ExaminationDto struct {
-	ID               uint    `json:"id"`
-	IndicationID     uint    `json:"indicationId"`
-	SampleID         uint    `json:"sampleId"`
+	ID               int64   `json:"id"`
+	IndicationID     int64   `json:"indicationId"`
+	SampleID         int64   `json:"sampleId"`
 	Signage          string  `json:"signage"`
 	NutritionalValue string  `json:"nutritionalValue"`
 	Specification    string  `json:"specification"`
