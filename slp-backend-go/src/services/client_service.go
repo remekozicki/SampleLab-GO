@@ -25,19 +25,16 @@ func GetAllClients() ([]dto.ClientDto, error) {
 func SaveClient(dto dto.ClientDto) error {
 	dbConn := db.GetDB()
 
-	// 1. Zamień DTO na Model
 	client := models.ClientToModel(dto)
 
 	address := client.Address
 
-	//2. Najpierw zapisz address (bez ID == fail)
 	if err := dbConn.Create(&address).Error; err != nil {
 		return err
 	}
 	client.AddressID = address.ID
 	client.Address = models.Address{}
 
-	// 4. Zapisz klienta
 	if err := dbConn.Create(&client).Error; err != nil {
 		return err
 	}
