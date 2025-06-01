@@ -121,13 +121,23 @@ func main() {
 	examination.Use(auth.JWTMiddleware())
 
 	{
-		//examination.GET("/sample/:sampleId", controllers.GetExaminationsBySampleID)
+		examination.GET("/sample/:sampleId", controllers.GetExaminationsBySampleID)
 		examination.GET("/:id", controllers.GetExaminationByID)
-		//examination.POST("", auth.RequireMinRole("WORKER"), controllers.SaveExamination)
-		//examination.PUT("", auth.RequireMinRole("WORKER"), controllers.UpdateExamination)
+		examination.POST("", auth.RequireMinRole("WORKER"), controllers.SaveExamination)
+		examination.PUT("", auth.RequireMinRole("WORKER"), controllers.UpdateExamination)
 		examination.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteExamination)
 	}
 
+	sample := r.Group("/sample")
+	sample.Use(auth.JWTMiddleware())
+	{
+		sample.GET("", controllers.GetAllSamples)
+		sample.GET("/:id", controllers.GetSampleByID)
+		sample.POST("", auth.RequireMinRole("WORKER"), controllers.SaveSample)
+		sample.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.UpdateSample)
+		sample.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteSample)
+		sample.POST("/filtered", controllers.FilterSamplesHandler)
+	}
 	if err := r.Run(":8090"); err != nil {
 		return
 	}
