@@ -45,6 +45,10 @@ CREATE SEQUENCE IF NOT EXISTS examination_id_seq;
 ALTER TABLE examination ALTER COLUMN id SET DEFAULT nextval('examination_id_seq');
 SELECT setval('examination_id_seq', (SELECT COALESCE(MAX(id), 0) FROM examination));
 
+-- Sample table
+CREATE SEQUENCE IF NOT EXISTS sample_id_seq;
+ALTER TABLE sample ALTER COLUMN id SET DEFAULT nextval('sample_id_seq');
+SELECT setval('sample_id_seq', (SELECT COALESCE(MAX(id), 0) FROM sample));
 
 
 -- auto delete assortment_indications
