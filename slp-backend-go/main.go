@@ -42,7 +42,7 @@ func main() {
 	{
 		addresses.GET("", controllers.GetAddressList)
 	}
-	clients := r.Group("/clients")
+	clients := r.Group("/client")
 	clients.Use(auth.JWTMiddleware())
 	{
 		clients.GET("", controllers.GetClientList)
@@ -104,6 +104,17 @@ func main() {
 		inspections.POST("", auth.RequireMinRole("WORKER"), controllers.AddInspection)
 		inspections.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditInspection)
 		inspections.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteInspection)
+	}
+
+	reportData := r.Group("/report-data")
+	reportData.Use(auth.JWTMiddleware())
+
+	{
+		reportData.GET("", controllers.GetAllReportData)
+		reportData.GET("/:sampleId", controllers.GetReportDataBySampleID)
+		reportData.POST("", auth.RequireMinRole("WORKER"), controllers.SaveReportData)
+		reportData.PUT("", auth.RequireMinRole("WORKER"), controllers.UpdateReportData)
+		reportData.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteReportData)
 	}
 
 	if err := r.Run(":8090"); err != nil {
