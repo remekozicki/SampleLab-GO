@@ -3,7 +3,7 @@ services:
     build: ./slp-backend
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
@@ -19,7 +19,7 @@ services:
     build: ./slp-backend-go
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "8090:8090"
     environment:
@@ -33,7 +33,6 @@ services:
       - front-tier
       - back-tier
 
-
   frontend:
     build: ./slp-frontend
     depends_on:
@@ -46,19 +45,39 @@ services:
     networks:
       - front-tier
 
-
   db:
     image: postgres:latest
     ports:
       - "5433:5432"
     volumes:
       - "db-data:/var/lib/postgresql/data"
-      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
 
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "sample-lab-db"
+    networks:
+      - back-tier
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db-post-init:
+    image: postgres:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      sleep 5 &&
+      echo 'Running post-init.sql...' &&
+      psql -U postgres -d sample-lab-db -h db -f /docker-entrypoint-initdb.d/init.sql
+    environment:
+      PGPASSWORD: "postgres"
+    volumes:
+      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - back-tier
 
