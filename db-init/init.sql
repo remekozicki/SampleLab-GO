@@ -1,7 +1,4 @@
--- Address table
-CREATE SEQUENCE IF NOT EXISTS address_id_seq;
-ALTER TABLE address ALTER COLUMN id SET DEFAULT nextval('address_id_seq');
-SELECT setval('address_id_seq', (SELECT COALESCE(MAX(id), 0) FROM address));
+
 
 -- Client table
 CREATE SEQUENCE IF NOT EXISTS client_id_seq;
@@ -45,7 +42,10 @@ CREATE SEQUENCE IF NOT EXISTS examination_id_seq;
 ALTER TABLE examination ALTER COLUMN id SET DEFAULT nextval('examination_id_seq');
 SELECT setval('examination_id_seq', (SELECT COALESCE(MAX(id), 0) FROM examination));
 
-
+-- Address table
+CREATE SEQUENCE IF NOT EXISTS address_id_seq;
+ALTER TABLE address ALTER COLUMN id SET DEFAULT nextval('address_id_seq');
+SELECT setval('address_id_seq', (SELECT COALESCE(MAX(id), 0) FROM address));
 
 -- auto delete assortment_indications
 ALTER TABLE assortment_indications
