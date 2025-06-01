@@ -28,8 +28,8 @@ type SampleFilterDto struct {
 }
 
 type FilterFields struct {
-	Codes            []string `json:"codes"`
-	Clients          []string `json:"clients"`
+	Code             []string `json:"codes"`
+	Client           []string `json:"clients"`
 	Groups           []string `json:"groups"`
 	ProgressStatuses []string `json:"progressStatuses"` // lub []int jeśli trzymasz enum jako int
 }
