@@ -20,6 +20,10 @@ type Examination struct {
 	LOQ              float64
 }
 
+func (Examination) TableName() string {
+	return "examination"
+}
+
 func ToExaminationDto(e Examination) dto.ExaminationDto {
 	return dto.ExaminationDto{
 		ID:               e.ID,
