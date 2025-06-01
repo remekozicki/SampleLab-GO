@@ -9,6 +9,7 @@ import (
 )
 
 var database *gorm.DB
+var testDB *gorm.DB
 
 func InitDB() {
 	host := os.Getenv("DB_HOST")
@@ -48,5 +49,13 @@ func SetDB(db *gorm.DB) {
 }
 
 func GetDB() *gorm.DB {
+	if testDB != nil {
+		return testDB
+	}
+
 	return database
+}
+
+func OverrideDB(mock *gorm.DB) {
+	testDB = mock
 }
