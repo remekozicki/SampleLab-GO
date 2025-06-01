@@ -24,79 +24,100 @@ func main() {
 	db.InitDB()
 
 	users := r.Group("/users")
-	users.POST("/login", controllers.Login)
+	{
+		users.POST("/login", controllers.Login)
+	}
+
 	users.Use(auth.JWTMiddleware())
 	{
-		users.GET("/", auth.RequireMinRole("ADMIN"), controllers.GetAllUsers)
-		users.POST("/register", controllers.Register)
+		users.GET("", auth.RequireMinRole("ADMIN"), controllers.GetAllUsers)
+		users.POST("", controllers.Register)
 		users.POST("/change-password", controllers.ChangePassword)
 		users.POST("/change-password/:email", auth.RequireMinRole("ADMIN"), controllers.ChangePasswordByAdmin)
 		users.DELETE("/:email", auth.RequireMinRole("ADMIN"), controllers.DeleteUserByEmail)
-
 	}
 
-	address := r.Group("/address")
-	address.Use(auth.JWTMiddleware())
+	addresses := r.Group("/addresses")
+	addresses.Use(auth.JWTMiddleware())
 	{
-		address.GET("/list", controllers.GetAddressList)
+		addresses.GET("", controllers.GetAddressList)
 	}
-
 	clients := r.Group("/client")
 	clients.Use(auth.JWTMiddleware())
 	{
-		clients.GET("/list", controllers.GetClientList)
-		clients.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddClient)
-		clients.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditClient)
-		clients.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteIndication)
+		clients.GET("", controllers.GetClientList)
+		clients.POST("", auth.RequireMinRole("WORKER"), controllers.AddClient)
+		clients.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditClient)
+		clients.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteClient)
 	}
 
-	indication := r.Group("/indication")
-	indication.Use(auth.JWTMiddleware())
+	indications := r.Group("/indications")
+	indications.Use(auth.JWTMiddleware())
 	{
-		indication.GET("/list", controllers.GetAllIndications)
-		indication.GET("/:id", controllers.GetIndicationByID)
-		indication.POST("/save", auth.RequireMinRole("WORKER"), controllers.SaveIndication)
-		indication.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditIndication)
-		indication.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteClient)
-	}
-	assortment := r.Group("/assortment")
-	assortment.Use(auth.JWTMiddleware())
-	{
-		assortment.GET("/list", controllers.GetAssortmentList)
-		assortment.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddAssortment)
-		assortment.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditAssortment)
-		assortment.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteAssortment)
+		indications.GET("", controllers.GetAllIndications)
+		indications.GET("/:id", controllers.GetIndicationByID)
+		indications.POST("", auth.RequireMinRole("WORKER"), controllers.SaveIndication)
+		indications.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditIndication)
+		indications.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteIndication)
 	}
 
-	productGroup := r.Group("/product-group")
-	productGroup.Use(auth.JWTMiddleware())
+	assortments := r.Group("/assortments")
+	assortments.Use(auth.JWTMiddleware())
 	{
-		productGroup.GET("/list", controllers.GetProductGroupList)
-		productGroup.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddProductGroup)
-		productGroup.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditProductGroup)
-		productGroup.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteProductGroup)
+		assortments.GET("", controllers.GetAssortmentList)
+		assortments.POST("", auth.RequireMinRole("WORKER"), controllers.AddAssortment)
+		assortments.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditAssortment)
+		assortments.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteAssortment)
 	}
 
-	sampling := r.Group("/sampling-standard")
-	sampling.Use(auth.JWTMiddleware())
+	productGroups := r.Group("/product-groups")
+	productGroups.Use(auth.JWTMiddleware())
 	{
-		sampling.GET("/list", controllers.GetSamplingStandardList)
-		sampling.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddSamplingStandard)
-		sampling.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditSamplingStandard)
-		sampling.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteSamplingStandard)
+		productGroups.GET("", controllers.GetProductGroupList)
+		productGroups.POST("", auth.RequireMinRole("WORKER"), controllers.AddProductGroup)
+		productGroups.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditProductGroup)
+		productGroups.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteProductGroup)
 	}
 
-	code := r.Group("/code")
-	code.Use(auth.JWTMiddleware())
+	samplingStandards := r.Group("/sampling-standards")
+	samplingStandards.Use(auth.JWTMiddleware())
 	{
-		code.GET("/list", controllers.GetAllCodes)
-		code.POST("/save", auth.RequireMinRole("WORKER"), controllers.AddCode)
-		code.PUT("/update", auth.RequireMinRole("WORKER"), controllers.EditCode)
-		code.DELETE("/delete/:id", auth.RequireMinRole("WORKER"), controllers.DeleteCode)
+		samplingStandards.GET("", controllers.GetSamplingStandardList)
+		samplingStandards.POST("", auth.RequireMinRole("WORKER"), controllers.AddSamplingStandard)
+		samplingStandards.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditSamplingStandard)
+		samplingStandards.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteSamplingStandard)
 	}
 
-	err := r.Run(":8090")
-	if err != nil {
+	codes := r.Group("/codes")
+	codes.Use(auth.JWTMiddleware())
+	{
+		codes.GET("", controllers.GetAllCodes)
+		codes.POST("", auth.RequireMinRole("WORKER"), controllers.AddCode)
+		codes.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditCode)
+		codes.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteCode)
+	}
+
+	inspections := r.Group("/inspections")
+	inspections.Use(auth.JWTMiddleware())
+	{
+		inspections.GET("", controllers.GetInspectionList)
+		inspections.POST("", auth.RequireMinRole("WORKER"), controllers.AddInspection)
+		inspections.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditInspection)
+		inspections.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteInspection)
+	}
+
+	reportData := r.Group("/report-data")
+	reportData.Use(auth.JWTMiddleware())
+
+	{
+		reportData.GET("", controllers.GetAllReportData)
+		reportData.GET("/:sampleId", controllers.GetReportDataBySampleID)
+		reportData.POST("", auth.RequireMinRole("WORKER"), controllers.SaveReportData)
+		reportData.PUT("", auth.RequireMinRole("WORKER"), controllers.UpdateReportData)
+		reportData.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteReportData)
+	}
+
+	if err := r.Run(":8090"); err != nil {
 		return
 	}
 }

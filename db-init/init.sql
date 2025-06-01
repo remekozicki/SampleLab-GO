@@ -35,6 +35,11 @@ CREATE SEQUENCE sampling_standard_id_seq;
 ALTER TABLE sampling_standard ALTER COLUMN id SET DEFAULT nextval('sampling_standard_id_seq');
 SELECT setval('sampling_standard_id_seq', COALESCE((SELECT MAX(id) FROM sampling_standard), 1));
 
+-- Inspection table
+CREATE SEQUENCE inspection_id_seq;
+ALTER TABLE inspection ALTER COLUMN id SET DEFAULT nextval('inspection_id_seq');
+SELECT setval('inspection_id_seq', COALESCE((SELECT MAX(id) FROM inspection), 1));
+
 -- Examination table
 CREATE SEQUENCE IF NOT EXISTS examination_id_seq;
 ALTER TABLE examination ALTER COLUMN id SET DEFAULT nextval('examination_id_seq');
