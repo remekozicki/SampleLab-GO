@@ -1,0 +1,24 @@
+name: Go Tests
+
+on:
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+
+    - name: Run tests from slp-backend-go
+      working-directory: ./slp-backend-go
+      run: |
+        go mod download
+        go test ./... -v
