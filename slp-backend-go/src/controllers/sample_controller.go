@@ -97,3 +97,12 @@ func FilterSamplesHandler(c *gin.Context) {
 		"samples":    samples,
 	})
 }
+
+func GetFilters(c *gin.Context) {
+	filters, err := services.GetFilters()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Błąd pobierania filtrów"})
+		return
+	}
+	c.JSON(http.StatusOK, filters)
+}

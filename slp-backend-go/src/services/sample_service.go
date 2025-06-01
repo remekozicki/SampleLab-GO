@@ -150,11 +150,11 @@ func FilterSamples(filter dto.SampleFilterDto) ([]dto.SampleSummaryDto, int64, e
 	}
 
 	// Filtry po polach
-	if len(filter.Filters.Codes) > 0 {
-		query = query.Where("codes.id IN ?", filter.Filters.Codes)
+	if len(filter.Filters.Code) > 0 {
+		query = query.Where("codes.id IN ?", filter.Filters.Code)
 	}
-	if len(filter.Filters.Clients) > 0 {
-		query = query.Where("clients.name IN ?", filter.Filters.Clients)
+	if len(filter.Filters.Client) > 0 {
+		query = query.Where("clients.name IN ?", filter.Filters.Client)
 	}
 	if len(filter.Filters.Groups) > 0 {
 		query = query.Where("product_groups.name IN ?", filter.Filters.Groups)
@@ -204,4 +204,33 @@ func FilterSamples(filter dto.SampleFilterDto) ([]dto.SampleSummaryDto, int64, e
 	}
 
 	return result, total, nil
+}
+
+func GetFilters() (dto.FilterFields, error) {
+	conn := db.GetDB()
+
+	var codes []string
+	if err := conn.Table("code").Select("id").Scan(&codes).Error; err != nil {
+		return dto.FilterFields{}, err
+	}
+
+	var clients []string
+	if err := conn.Table("client").Select("name").Scan(&clients).Error; err != nil {
+		return dto.FilterFields{}, err
+	}
+
+	var groups []string
+	if err := conn.
+		Table("product_group").
+		Select("DISTINCT product_group.name").
+		Joins("JOIN assortment ON assortment.group_id = product_group.id").
+		Scan(&groups).Error; err != nil {
+		return dto.FilterFields{}, err
+	}
+
+	return dto.FilterFields{
+		Code:   codes,
+		Client: clients,
+		Groups: groups,
+	}, nil
 }

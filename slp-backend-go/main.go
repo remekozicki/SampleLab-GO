@@ -137,7 +137,15 @@ func main() {
 		sample.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.UpdateSample)
 		sample.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteSample)
 		sample.POST("/filtered", controllers.FilterSamplesHandler)
+
 	}
+
+	data := r.Group("/data")
+	data.Use(auth.JWTMiddleware())
+	{
+		data.GET("/filters", auth.RequireMinRole("WORKER"), controllers.GetFilters)
+	}
+
 	if err := r.Run(":8090"); err != nil {
 		return
 	}
