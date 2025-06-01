@@ -121,7 +121,7 @@ func main() {
 	examination.Use(auth.JWTMiddleware())
 
 	{
-		examination.GET("/sample/:sampleId", controllers.GetExaminationsBySampleID)
+		//examination.GET("/sample/:sampleId", controllers.GetExaminationsBySampleID)
 		examination.GET("/:id", controllers.GetExaminationByID)
 		//examination.POST("", auth.RequireMinRole("WORKER"), controllers.SaveExamination)
 		//examination.PUT("", auth.RequireMinRole("WORKER"), controllers.UpdateExamination)
