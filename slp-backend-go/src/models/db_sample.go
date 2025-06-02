@@ -45,9 +45,9 @@ func (Sample) TableName() string {
 func ToSampleDto(s Sample) dto.SampleDto {
 	return dto.SampleDto{
 		ID:                         s.ID,
-		CodeID:                     s.CodeID,
-		ClientID:                   s.ClientID,
-		AssortmentID:               s.AssortmentID,
+		Code:                       CodeToDto(s.Code),
+		Client:                     ClientToDto(s.Client),
+		Assortment:                 AssortmentToDto(s.Assortment),
 		AdmissionDate:              s.AdmissionDate,
 		ExpirationDate:             s.ExpirationDate,
 		ExpirationComment:          s.ExpirationComment,
@@ -55,29 +55,39 @@ func ToSampleDto(s Sample) dto.SampleDto {
 		Size:                       s.Size,
 		State:                      s.State,
 		Analysis:                   s.Analysis,
-		InspectionID:               s.InspectionID,
-		SamplingStandardID:         s.SamplingStandardID,
-		ReportDataID:               s.ReportDataID,
+		Inspection:                 InspectionToDto(s.Inspection),
+		SamplingStandard:           SamplingStandardToDto(s.SamplingStandard),
+		ReportData:                 ToReportDataDto(s.ReportData),
 		ProgressStatus:             s.ProgressStatus,
 	}
 }
 
 func ToSampleModel(d dto.SampleDto) Sample {
+	expirationComment := d.ExpirationComment
+	if expirationComment == "" {
+		expirationComment = "Brak"
+	}
+
+	state := d.State
+	if state == "" {
+		state = "Bez zastrzeżeń"
+	}
+
 	return Sample{
 		ID:                         d.ID,
-		CodeID:                     d.CodeID,
-		ClientID:                   d.ClientID,
-		AssortmentID:               d.AssortmentID,
+		CodeID:                     d.Code.ID,
+		ClientID:                   d.Client.ID,
+		AssortmentID:               d.Assortment.ID,
 		AdmissionDate:              d.AdmissionDate,
 		ExpirationDate:             d.ExpirationDate,
-		ExpirationComment:          d.ExpirationComment,
+		ExpirationComment:          expirationComment,
 		ExaminationExpectedEndDate: d.ExaminationExpectedEndDate,
 		Size:                       d.Size,
-		State:                      d.State,
+		State:                      state,
 		Analysis:                   d.Analysis,
-		InspectionID:               d.InspectionID,
-		SamplingStandardID:         d.SamplingStandardID,
-		ReportDataID:               d.ReportDataID,
+		InspectionID:               d.Inspection.ID,
+		SamplingStandardID:         d.SamplingStandard.ID,
+		ReportDataID:               d.ReportData.ID,
 		ProgressStatus:             d.ProgressStatus,
 	}
 }
