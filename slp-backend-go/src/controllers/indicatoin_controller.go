@@ -68,19 +68,19 @@ func DeleteIndication(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-//func GetIndicationsForSample(c *gin.Context) {
-//	sampleIDStr := c.Param("sampleId")
-//	sampleID, err := strconv.ParseInt(sampleIDStr, 10, 64)
-//	if err != nil {
-//		c.JSON(http.StatusBadRequest, gin.H{"error": "Nieprawidłowe ID próbki"})
-//		return
-//	}
-//
-//	indications, err := services.SelectIndicationsForSample(sampleID)
-//	if err != nil {
-//		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-//		return
-//	}
-//
-//	c.JSON(http.StatusOK, indications)
-//}
+func GetIndicationsForSample(c *gin.Context) {
+	sampleIDStr := c.Param("sampleId")
+	sampleID, err := strconv.ParseInt(sampleIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nieprawidłowe ID próbki"})
+		return
+	}
+
+	indications, err := services.SelectIndicationsForSample(sampleID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, indications)
+}

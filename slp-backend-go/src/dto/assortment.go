@@ -6,4 +6,5 @@ type AssortmentDto struct {
 	OrganolepticMethod string          `json:"organolepticMethod"`
 	GroupID            int64           `json:"groupId"`
 	Group              ProductGroupDto `json:"group"`
+	Indications        []IndicationDto `json:"indications"`
 }

@@ -67,6 +67,7 @@ func main() {
 	{
 		indications.GET("/", controllers.GetAllIndications)
 		indications.GET("/:id", controllers.GetIndicationByID)
+		indications.GET("/sample/:id", controllers.GetIndicationsForSample)
 		indications.POST("/", auth.RequireMinRole("WORKER"), controllers.SaveIndication)
 		indications.PUT("/:id", auth.RequireMinRole("WORKER"), controllers.EditIndication)
 		indications.DELETE("/:id", auth.RequireMinRole("WORKER"), controllers.DeleteIndication)

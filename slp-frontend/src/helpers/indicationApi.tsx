@@ -6,7 +6,7 @@ const url = 'indications/'
 
 const getIndicationsForSample = (sampleId: string | undefined) => {
     if (!sampleId) return null;
-    return axios.get(backendUrl + `samples/${sampleId}/indications`, Header()); // GET /samples/:id/indications
+    return axios.get(backendUrl + `sample/${sampleId}`, Header()); // GET /samples/:id/indications
 }
 
 const getIndicationById = (indicationId: string | undefined) => {
