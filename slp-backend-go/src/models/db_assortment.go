@@ -8,6 +8,7 @@ type Assortment struct {
 	OrganolepticMethod string       `gorm:"type:varchar(255);column:organoleptic_method"` // varchar(255), z nazwą kolumny
 	GroupID            int64        `gorm:"column:group_id"`                              // bigint, FK do product_group
 	Group              ProductGroup `gorm:"foreignKey:GroupID"`
+	Indications        []Indication `json:"indications"`
 }
 
 func (Assortment) TableName() string {

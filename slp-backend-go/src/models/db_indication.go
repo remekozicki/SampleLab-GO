@@ -11,13 +11,14 @@ type Indication struct {
 	Unit           string
 	Laboratory     string
 	IsOrganoleptic bool `json:"isOrganoleptic"`
+	AssortmentID   int64
 }
 
 func (Indication) TableName() string {
 	return "indication"
 }
 
-func ToIndicationDto(i Indication) dto.IndicationDto {
+func IndicationToDto(i Indication) dto.IndicationDto {
 	return dto.IndicationDto{
 		ID:             i.ID,
 		Name:           i.Name,
@@ -37,4 +38,20 @@ func ToIndicationModel(d dto.IndicationDto) Indication {
 		Laboratory:     d.Laboratory,
 		IsOrganoleptic: d.IsOrganoleptic,
 	}
+}
+
+func MapIndicationsToDto(list []Indication) []dto.IndicationDto {
+	result := make([]dto.IndicationDto, len(list))
+	for i, item := range list {
+		result[i] = IndicationToDto(item)
+	}
+	return result
+}
+
+func MapIndicationsFromDto(list []dto.IndicationDto) []Indication {
+	result := make([]Indication, len(list))
+	for i, item := range list {
+		result[i] = ToIndicationModel(item)
+	}
+	return result
 }

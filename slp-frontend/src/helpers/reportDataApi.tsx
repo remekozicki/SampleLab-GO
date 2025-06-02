@@ -13,7 +13,7 @@ const addReportData = (reportData:ReportData) => {
 }
 
 const getReportDataBySampleId = (sampleId:string | undefined) => {
-    return axios.get(backendUrl + url + `sample/${sampleId}`, Header())
+    return axios.get(backendUrl + url + sampleId, Header())
 }
 
 export {
