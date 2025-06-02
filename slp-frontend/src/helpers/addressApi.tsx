@@ -4,7 +4,7 @@ import { Header } from "../utils/urls"
 const url = 'address/'
 
 const getAllAddresses = () => {
-    return axios.get(backendUrl + url + "list", Header())
+    return axios.get(backendUrl + url, Header())
 }
 
 export {

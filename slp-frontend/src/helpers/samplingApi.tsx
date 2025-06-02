@@ -4,11 +4,11 @@ import { Sample, FilterRequest } from "../utils/types"
 const url = "sample/"
 
 const getAllSamples = () => {
-    return axios.get(backendUrl + url + "list", Header())
+    return axios.get(backendUrl + url , Header())
 }
 
 const getFilteredSamples = (request: FilterRequest) => {
-    return axios.put(backendUrl + url + "list/filtered", request, Header())
+    return axios.put(backendUrl + url + "filtered", request, Header())
 }
 
 const getNumberOfSamples = () => {
@@ -16,7 +16,7 @@ const getNumberOfSamples = () => {
 }
 
 const addSample = (sample: Sample) => {
-    return axios.post(backendUrl + url + "save", sample, Header())
+    return axios.post(backendUrl + url, sample, Header())
 }
 
 export{

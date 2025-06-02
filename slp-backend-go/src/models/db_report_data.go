@@ -38,6 +38,10 @@ type ReportData struct {
 	SampleID             int64
 }
 
+func (ReportData) TableName() string {
+	return "report_data" // lub "samples" jeśli używasz liczby mnogiej
+}
+
 func ToReportDataDto(m ReportData) dto.ReportDataDto {
 	return dto.ReportDataDto{
 		ID:                   m.ID,

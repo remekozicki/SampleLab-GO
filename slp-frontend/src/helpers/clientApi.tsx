@@ -2,7 +2,7 @@ import axios from "axios"
 import {backendUrl, Header} from "../utils/urls"
 import {Client} from "../utils/types";
 
-const url = "clients/"
+const url = "client/"
 
 const getAllClients = () => {
     return axios.get(backendUrl + url, Header()); // GET /clients

@@ -5,7 +5,7 @@ import {ReportData} from "../utils/types"
 const url = `sample/`
 
 const getAllSamples = () => {
-    return axios.get(backendUrl + url + `list`, Header())
+    return axios.get(backendUrl + url, Header())
 }
 
 const addReportDataToSample = (sampleId: string | undefined, reportData: ReportData) => {
