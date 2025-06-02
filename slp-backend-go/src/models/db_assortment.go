@@ -20,6 +20,7 @@ func AssortmentToDto(a Assortment) dto.AssortmentDto {
 		Name:               a.Name,
 		OrganolepticMethod: a.OrganolepticMethod,
 		GroupID:            a.GroupID,
+		Group:              ProductGroupToDto(a.Group),
 	}
 }
 
@@ -29,5 +30,6 @@ func AssortmentFromDto(dto dto.AssortmentDto) Assortment {
 		Name:               dto.Name,
 		OrganolepticMethod: dto.OrganolepticMethod,
 		GroupID:            dto.GroupID,
+		Group:              ProductGroupToModel(dto.Group),
 	}
 }

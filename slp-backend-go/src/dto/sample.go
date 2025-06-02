@@ -3,21 +3,27 @@ package dto
 import "samplelab-go/src/enum"
 
 type SampleDto struct {
-	ID                         int64               `json:"id"`
-	CodeID                     string              `json:"codeId"`
-	ClientID                   int64               `json:"clientId"`
-	AssortmentID               int64               `json:"assortmentId"`
-	AdmissionDate              string              `json:"admissionDate"`
-	ExpirationDate             string              `json:"expirationDate"`
-	ExpirationComment          string              `json:"expirationComment"`
-	ExaminationExpectedEndDate string              `json:"examinationExpectedEndDate"`
-	Size                       string              `json:"size"`
-	State                      string              `json:"state"`
-	Analysis                   bool                `json:"analysis"`
-	InspectionID               int64               `json:"inspectionId"`
-	SamplingStandardID         int64               `json:"samplingStandardId"`
-	ReportDataID               int64               `json:"reportDataId"`
-	ProgressStatus             enum.ProgressStatus `json:"progressStatus"`
+	ID int64 `json:"id"`
+	//CodeID                     string               `json:"codeId"`
+	Code CodeDto `json:"code,omitempty"`
+	//ClientID                   int64                `json:"clientId"`
+	Client ClientDto `json:"client,omitempty"`
+	//AssortmentID               int64                `json:"assortmentId"`
+	Assortment                 AssortmentDto `json:"assortment,omitempty"`
+	AdmissionDate              string        `json:"admissionDate"`
+	ExpirationDate             string        `json:"expirationDate"`
+	ExpirationComment          string        `json:"expirationComment"`
+	ExaminationExpectedEndDate string        `json:"examinationExpectedEndDate"`
+	Size                       string        `json:"size"`
+	State                      string        `json:"state"`
+	Analysis                   bool          `json:"analysis"`
+	//InspectionID               int64                `json:"inspectionId"`
+	Inspection InspectionDto `json:"inspection,omitempty"`
+	//SamplingStandardID         int64                `json:"samplingStandardId"`
+	SamplingStandard SamplingStandardDto `json:"samplingStandard,omitempty"`
+	//ReportDataID               int64                `json:"reportDataId"`
+	ReportData     ReportDataDto       `json:"reportData,omitempty"`
+	ProgressStatus enum.ProgressStatus `json:"progressStatus"`
 }
 
 type SampleFilterDto struct {

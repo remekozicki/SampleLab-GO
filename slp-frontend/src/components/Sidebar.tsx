@@ -88,24 +88,24 @@ const Sidebar: React.FC<{}> = () => {
                             Edytuj dane
                         </p>
                     </li>
-                    {localStorage.getItem('role') !== 'INTERN' && (
-                        <li className="my-2">
-                            <p
-                                className="pl-10 text-white no-underline block p-2.5 rounded cursor-pointer hover:bg-gray-600"
-                                onClick={() => navigate('/importMethods')}
-                            >
-                                Wczytaj metody
-                            </p>
-                        </li>
-                    )}
-                    <li className="my-2">
-                        <p
-                            className="pl-10 text-white no-underline block p-2.5 rounded cursor-pointer hover:bg-gray-600"
-                            onClick={() => handleBackup()}
-                        >
-                            Archiwizuj dane
-                        </p>
-                    </li>
+                    {/*{localStorage.getItem('role') !== 'INTERN' && (*/}
+                    {/*    <li className="my-2">*/}
+                    {/*        <p*/}
+                    {/*            className="pl-10 text-white no-underline block p-2.5 rounded cursor-pointer hover:bg-gray-600"*/}
+                    {/*            onClick={() => navigate('/importMethods')}*/}
+                    {/*        >*/}
+                    {/*            Wczytaj metody*/}
+                    {/*        </p>*/}
+                    {/*    </li>*/}
+                    {/*)}*/}
+                    {/*<li className="my-2">*/}
+                    {/*    <p*/}
+                    {/*        className="pl-10 text-white no-underline block p-2.5 rounded cursor-pointer hover:bg-gray-600"*/}
+                    {/*        onClick={() => handleBackup()}*/}
+                    {/*    >*/}
+                    {/*        Archiwizuj dane*/}
+                    {/*    </p>*/}
+                    {/*</li>*/}
                     {localStorage.getItem('role') === 'ADMIN' && (
                         <li className="my-2">
                             <p

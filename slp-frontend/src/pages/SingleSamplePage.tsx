@@ -158,27 +158,27 @@ const SingleSamplePage = () => {
             {localStorage.getItem('role') !== 'INTERN' && <StandardButton type="button" onClick={() => {
                 navigate(`/sample/edit/${sampleId}`)
             }}>Edytuj próbkę</StandardButton>}
-            {localStorage.getItem('role') !== 'INTERN' && <Dropdown>
-                <Dropdown.Toggle
-                    disabled={sample?.progressStatus !== ProgressStateEnum.DONE}
-                    variant="primary"
-                    id="dropdown-basic"
-                    className="p-2 rounded self-center text-white border-0"
-                    style={{
-                        backgroundColor: sample?.progressStatus !== ProgressStateEnum.DONE ? 'rgb(209, 213, 219)' : 'rgb(14, 165, 233)',
-                        color: sample?.progressStatus !== ProgressStateEnum.DONE ? 'rgb(107, 114, 128)' : 'white',
-                        cursor: sample?.progressStatus !== ProgressStateEnum.DONE ? 'not-allowed' : 'pointer',
-                        pointerEvents: sample?.progressStatus !== ProgressStateEnum.DONE ? 'none' : 'auto'
-                    }}
-                >
-                    Generuj raport
-                </Dropdown.Toggle>
+            {/*{localStorage.getItem('role') !== 'INTERN' && <Dropdown>*/}
+            {/*    <Dropdown.Toggle*/}
+            {/*        disabled={sample?.progressStatus !== ProgressStateEnum.DONE}*/}
+            {/*        variant="primary"*/}
+            {/*        id="dropdown-basic"*/}
+            {/*        className="p-2 rounded self-center text-white border-0"*/}
+            {/*        style={{*/}
+            {/*            backgroundColor: sample?.progressStatus !== ProgressStateEnum.DONE ? 'rgb(209, 213, 219)' : 'rgb(14, 165, 233)',*/}
+            {/*            color: sample?.progressStatus !== ProgressStateEnum.DONE ? 'rgb(107, 114, 128)' : 'white',*/}
+            {/*            cursor: sample?.progressStatus !== ProgressStateEnum.DONE ? 'not-allowed' : 'pointer',*/}
+            {/*            pointerEvents: sample?.progressStatus !== ProgressStateEnum.DONE ? 'none' : 'auto'*/}
+            {/*        }}*/}
+            {/*    >*/}
+            {/*        Generuj raport*/}
+            {/*    </Dropdown.Toggle>*/}
 
-                <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => generateReport(Number(sampleId), "F4")}>Raport F-4</Dropdown.Item>
-                    <Dropdown.Item onClick={() => generateReport(Number(sampleId), "F5")}>Raport F-5</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>}
+            {/*    <Dropdown.Menu>*/}
+            {/*        <Dropdown.Item onClick={() => generateReport(Number(sampleId), "F4")}>Raport F-4</Dropdown.Item>*/}
+            {/*        <Dropdown.Item onClick={() => generateReport(Number(sampleId), "F5")}>Raport F-5</Dropdown.Item>*/}
+            {/*    </Dropdown.Menu>*/}
+            {/*</Dropdown>}*/}
             {localStorage.getItem('role') !== 'INTERN' && <StandardButton type="button" className="!bg-red-500 hover:!bg-red-600" onClick={() => {
                 setIsPopupOpen(true);
             }}>Usuń próbkę</StandardButton>}
