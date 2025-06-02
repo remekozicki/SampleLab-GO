@@ -5,18 +5,18 @@ import {Assortment} from "../utils/types";
 const url = "assortment/"
 
 const getAllAssortments = () => {
-    return axios.get(backendUrl + url + "list", Header())
+    return axios.get(backendUrl + url, Header())
 }
 const updateAssortment = (item: Assortment) => {
-    return axios.put(backendUrl + url + 'update', item, Header());
+    return axios.put(backendUrl + url, item, Header());
 }
 
 const addAssortment = (item: Assortment) => {
-    return axios.post(backendUrl + url + 'save', item, Header());
+    return axios.post(backendUrl + url, item, Header());
 }
 
 const deleteAssortment = (id: number | null) => {
-    return axios.delete(backendUrl + url + `delete/${id}`, Header());
+    return axios.delete(backendUrl + url + id, Header());
 }
 
 export {

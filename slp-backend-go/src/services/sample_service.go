@@ -2,11 +2,14 @@ package services
 
 import (
 	"errors"
+	"fmt"
+	"samplelab-go/src/enum"
+	"strings"
+
 	"gorm.io/gorm"
 	"samplelab-go/src/db"
 	"samplelab-go/src/dto"
 	"samplelab-go/src/models"
-	"strings"
 )
 
 func GetAllSamples() ([]dto.SampleDto, error) {
@@ -129,54 +132,60 @@ func UpdateSample(sampleDto dto.SampleDto) error {
 func FilterSamples(filter dto.SampleFilterDto) ([]dto.SampleSummaryDto, int64, error) {
 	dbConn := db.GetDB()
 	query := dbConn.Model(&models.Sample{}).
-		Joins("JOIN codes ON samples.code_id = codes.id").
-		Joins("JOIN clients ON samples.client_id = clients.id").
-		Joins("JOIN assortments ON samples.assortment_id = assortments.id").
-		Joins("JOIN product_groups ON assortments.group_id = product_groups.id").
-		Joins("LEFT JOIN examinations ON examinations.sample_id = samples.id").
-		Joins("LEFT JOIN indications ON examinations.indication_id = indications.id")
+		//Distinct("sample.id").
+		Joins("JOIN code ON sample.code_id = code.id").
+		Joins("JOIN client ON sample.client_id = client.id").
+		Joins("JOIN assortment ON sample.assortment_id = assortment.id").
+		Joins("JOIN product_group ON assortment.group_id = product_group.id").
+		Joins("LEFT JOIN examination ON examination.sample_id = sample.id").
+		Joins("LEFT JOIN indication ON examination.indication_id = indication.id").
+		Group("sample.id")
 
 	// Fuzzy search
-	if filter.FuzzySearch != "" {
-		pattern := "%%" + strings.ToLower(filter.FuzzySearch) + "%%"
+	if strings.TrimSpace(filter.FuzzySearch) != "" {
+		pattern := "%" + strings.ToLower(filter.FuzzySearch) + "%"
 		query = query.Where(
-			dbConn.Where("LOWER(codes.id::text) LIKE ?", pattern).
-				Or("LOWER(clients.name) LIKE ?", pattern).
-				Or("LOWER(assortments.name) LIKE ?", pattern).
-				Or("LOWER(product_groups.name) LIKE ?", pattern).
-				Or("LOWER(indications.name) LIKE ?", pattern).
-				Or("LOWER(indications.method) LIKE ?", pattern),
+			dbConn.Where("LOWER(code.id::text) LIKE ?", pattern).
+				Or("LOWER(client.name) LIKE ?", pattern).
+				Or("LOWER(assortment.name) LIKE ?", pattern).
+				Or("LOWER(product_group.name) LIKE ?", pattern).
+				Or("LOWER(indication.name) LIKE ?", pattern).
+				Or("LOWER(indication.method) LIKE ?", pattern),
 		)
 	}
 
 	// Filtry po polach
-	if len(filter.Filters.Code) > 0 {
-		query = query.Where("codes.id IN ?", filter.Filters.Code)
-	}
-	if len(filter.Filters.Client) > 0 {
-		query = query.Where("clients.name IN ?", filter.Filters.Client)
-	}
-	if len(filter.Filters.Groups) > 0 {
-		query = query.Where("product_groups.name IN ?", filter.Filters.Groups)
-	}
-	if len(filter.Filters.ProgressStatuses) > 0 {
-		query = query.Where("samples.progress_status IN ?", filter.Filters.ProgressStatuses)
+	if filter.Filters != nil {
+		if len(filter.Filters.Code) > 0 {
+			query = query.Where("code.id IN ?", filter.Filters.Code)
+		}
+		if len(filter.Filters.Client) > 0 {
+			query = query.Where("client.name IN ?", filter.Filters.Client)
+		}
+		if len(filter.Filters.Groups) > 0 {
+			query = query.Where("product_group.name IN ?", filter.Filters.Groups)
+		}
+		if len(filter.Filters.ProgressStatuses) > 0 {
+			query = query.Where("sample.progress_status IN ?", filter.Filters.ProgressStatuses)
+		}
 	}
 
 	// Zlicz rekordy do paginacji
 	var total int64
 	query.Count(&total)
 
+	fmt.Println("FieldName received:", filter.FieldName)
+
 	// Sortowanie
-	sortField := filter.FieldName
-	if sortField == "" {
-		sortField = "samples.id"
+	sortField := "sample.id"
+	if filter.FieldName != "" {
+		sortField = filter.FieldName
 	}
 	direction := "ASC"
 	if !filter.Ascending {
 		direction = "DESC"
 	}
-	query = query.Order(sortField + " " + direction + ", samples.id " + direction)
+	query = query.Order(sortField + " " + direction + ", sample.id " + direction)
 
 	// Stronicowanie
 	offset := filter.PageNumber * filter.PageSize
@@ -198,7 +207,7 @@ func FilterSamples(filter dto.SampleFilterDto) ([]dto.SampleSummaryDto, int64, e
 			Assortment:     s.Assortment.Name,
 			ClientName:     s.Client.Name,
 			AdmissionDate:  s.AdmissionDate,
-			ProgressStatus: string(s.ProgressStatus),
+			ProgressStatus: s.ProgressStatus,
 		}
 		result = append(result, summary)
 	}
@@ -233,4 +242,30 @@ func GetFilters() (dto.FilterFields, error) {
 		Client: clients,
 		Groups: groups,
 	}, nil
+}
+
+func CountSamples() (int64, error) {
+	var count int64
+	err := db.GetDB().Model(&models.Sample{}).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func UpdateSampleStatus(id uint, progress enum.ProgressStatus) (*models.Sample, error) {
+	dbConn := db.GetDB()
+
+	var sample models.Sample
+	if err := dbConn.First(&sample, id).Error; err != nil {
+		return nil, errors.New("próbka o podanym ID nie istnieje")
+	}
+
+	sample.ProgressStatus = progress
+
+	if err := dbConn.Save(&sample).Error; err != nil {
+		return nil, err
+	}
+
+	return &sample, nil
 }

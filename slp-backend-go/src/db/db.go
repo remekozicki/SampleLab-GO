@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"gorm.io/gorm/schema"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -37,7 +38,11 @@ func InitDB() {
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, password, host, port, dbname)
 
 	var err error
-	database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	database, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true, // <- KLUCZOWA LINIA
+		},
+	})
 	if err != nil {
 		panic(fmt.Sprintf("Błąd połączenia z bazą: %v", err))
 	}

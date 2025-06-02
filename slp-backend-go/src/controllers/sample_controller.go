@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"samplelab-go/src/enum"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -105,4 +106,36 @@ func GetFilters(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, filters)
+}
+
+func CountSamples(c *gin.Context) {
+	count, err := services.CountSamples()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Nie można policzyć próbek"})
+		return
+	}
+	c.JSON(http.StatusOK, count)
+}
+
+func UpdateSampleStatus(c *gin.Context) {
+	sampleID, err := strconv.ParseInt(c.Param("sampleId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid sample ID"})
+		return
+	}
+
+	statusParam := c.Param("status")
+	progress, err := enum.ConvertProgressStatus(statusParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updated, err := services.UpdateSampleStatus(uint(sampleID), progress)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updated)
 }

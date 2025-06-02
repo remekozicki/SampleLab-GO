@@ -1,6 +1,9 @@
 package models
 
-import "samplelab-go/src/dto"
+import (
+	"samplelab-go/src/dto"
+	"samplelab-go/src/enum"
+)
 
 type Sample struct {
 	ID     int64  `gorm:"primaryKey" json:"id"`
@@ -32,7 +35,7 @@ type Sample struct {
 
 	Examinations []Examination `gorm:"foreignKey:SampleID"`
 
-	ProgressStatus string `json:"progressStatus"`
+	ProgressStatus enum.ProgressStatus `json:"progressStatus"`
 }
 
 func (Sample) TableName() string {

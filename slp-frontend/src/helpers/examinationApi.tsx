@@ -6,7 +6,7 @@ const url = 'examination/'
 
 const getExaminationsForSample = (sampleId: string | undefined) => {
     if (sampleId !== undefined) {
-        return axios.get(backendUrl + url + `sample/${sampleId}`, Header())
+        return axios.get(backendUrl + url + sampleId, Header())
     }
     return null;
 }
@@ -19,15 +19,15 @@ const getExaminationById = (examinationId: string | undefined) => {
 }
 
 const updateExamination = (updatedExamination: Examination) => {
-    return axios.put(backendUrl + url + 'update', updatedExamination, Header());
+    return axios.put(backendUrl + url, updatedExamination, Header());
 }
 
 const addExamination = (examination: Examination) => {
-    return axios.post(backendUrl + url + "save", examination, Header());
+    return axios.post(backendUrl + url, examination, Header());
 }
 
 const deleteExamination = (examinationId: number) => {
-    return axios.delete(backendUrl + url + `delete/${examinationId}`, Header());
+    return axios.delete(backendUrl + url + examinationId, Header());
 }
 
 export {

@@ -22,10 +22,10 @@ export const getUsersData = () => {
     return axios.get(backendUrl + url, Header())  // GET /users, JWT + admin role
 }
 
-export const deleteUserByEmail = (email: string) => {
+export const deleteUserByEmail = (email: String) => {
     return axios.delete(backendUrl + url + email, Header())  // DELETE /users/:email, JWT + admin role
 }
 
-export const changePasswordForAdmin = (email: string, data: ChangePasswordPayload) => {
+export const changePasswordForAdmin = (email: String, data: ChangePasswordPayload) => {
     return axios.post(backendUrl + url + `change-password/${email}`, data, Header())  // POST /users/change-password/:email, JWT + admin role
 }
